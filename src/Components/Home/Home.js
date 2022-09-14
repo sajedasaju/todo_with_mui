@@ -1,5 +1,6 @@
 import React from 'react';
-import ShowData from './ShowData'
+import ShowData from './ShowData';
+
 
 const Home = () => {
     return (
