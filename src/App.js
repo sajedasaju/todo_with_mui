@@ -13,7 +13,7 @@ import CustomDialogs from './Components/Home/CustomDialog';
 
 
 function App() {
-  
+
   // const theme = createTheme({
   //   status: {
   //     danger: "#e53e3e",
@@ -35,11 +35,10 @@ function App() {
   //     },
   //   },
   // });
-  
+
   return (
     <div>
-       {/* <ThemeProvider theme={theme}> */}
-     <Routes>
+      <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/createData" element={<CreateData />} />
         <Route path="/dialog" element={<CustomDialogs />} />
@@ -47,7 +46,6 @@ function App() {
       </Routes>
       <ToastContainer />
 
-      {/* </ThemeProvider> */}
 
     </div>
   );

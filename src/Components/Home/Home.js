@@ -11,16 +11,16 @@ const Home = () => {
   };
 
 
-  const handleClose = ()=>{
+  const handleClose = () => {
     setIsModalOpen(false)
   }
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      {/* <Button variant="outlined" onClick={handleClickOpen}>
         Open dialog
       </Button>
-      {isModalOpen &&  <CustomDialog onClose={handleClose}/>}
-     
+      {isModalOpen && <CustomDialog onClose={handleClose} />} */}
+
       <ShowData />
     </div>
   );
