@@ -1,12 +1,13 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import { styled } from '@mui/material/styles';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import * as React from "react";
+import PropTypes from "prop-types";
+import { styled } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Button,
   FormControl,
@@ -19,28 +20,56 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { Controller } from 'react-hook-form';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Controller } from "react-hook-form";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useEffect } from "react";
+import * as yup from 'yup';
+import { CheckBox } from "@mui/icons-material";
 
 
 
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
+  "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
   },
-  '& .MuiDialogActions-root': {
+  "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
   },
 }));
+const TextFieldDesigned = styled(TextField)(({ theme }) => ({
+
+ " & .MuiOutlinedInput-root": {
+    "&.Mui-focused fieldset": {
+      "border-color": "#406b66",
+      'border-width':'.5px'
+    },
+  }
+  }
+
+));
+const SelectDesigned = styled(Select)(({ theme }) => ({
+
+ " & .MuiOutlinedInput-root": {
+    "&.Mui-focused fieldset": {
+      "border-color": "#406b66",
+      'border-width':'.5px'
+    },
+   
+  }
+
+  }
+
+));
 
 
 const BootstrapDialogTitle = (props) => {
   const { children, onClose, ...other } = props;
-
 
   return (
     <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
@@ -50,11 +79,26 @@ const BootstrapDialogTitle = (props) => {
           aria-label="close"
           onClick={onClose}
           sx={{
-            position: 'absolute',
+            position: "absolute",
             right: 8,
             top: 8,
             color: (theme) => theme.palette.grey[500],
+            backgroundColor: "#87CEEB",
+            padding: 0.5,
+            borderRadius: "50%",
+            fontSize: "26px",
+            fontWeight: "bolder",
           }}
+
+          // sx={{
+          //   backgroundColor: "#87CEEB",
+          //   padding: 0.5,
+          //   borderRadius: "50%",
+          //   fontSize: "26px",
+          //   fontWeight: "bolder",
+          // }}
+
+
         >
           <CloseIcon />
         </IconButton>
@@ -68,83 +112,125 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-
 export default function CustomDialog({ onClose, checkData }) {
   console.log(checkData);
+
+  let schema = yup.object().shape({
+    fullname: yup.string().required(),
+    fatherName: yup.string().required(),
+    motherName: yup.string().required(),
+    address: yup.string().required(),
+    studentId: yup.number().required().positive().integer(),
+    dept: yup.string().required(),
+  });
+
   const [dept, setDept] = useState("");
   const handleChange = (event) => {
-    console.log(event);
     setDept(event.target.value);
   };
+  const navigate = useNavigate();
+  const navigateToHome = () => {
+    navigate("/");
+  };
 
+  useEffect(() => {
+    setDept(checkData?.dept);
+    reset({
+      fullname: checkData?.studentName,
+      fathername: checkData?.fatherName,
+      mothername: checkData?.motherName,
+      address: checkData?.address,
+      studentId: checkData?.studenId,
+      dept: checkData?.dept,
+    });
+  }, []);
 
-  const FormContainer = styled(Box)`
-  color: #2e8b57;
-  background-color: #B2DFDB;
-  padding: 35px;
-  width: 70%;
-  margin: 10% auto;
-  border-radius: 10px;
-`;
-  const InputButton = styled(Input)`
-  margin-right: 30px;
-  color: black;
-  background-color: #87ceeb;
-  width: 15%;
-  border: 3;
-  padding-left: 2;
-  padding-right: 2;
-  box-shadow: 6px 6px 3px 1px rgba(0, 0, 255, 0.2);
-  border-radius: 4px;
-  border: 1px solid black;
-  margin-top: 20px;
-  text-align: center;
-`;
-
-
+ 
   const {
     register,
     handleSubmit,
     watch,
     control,
+    reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(schema)
+  });
   const onSubmit = (data) => {
     console.log(data);
+    if (!checkData) {
+      console.log(checkData);
+      axios
+        .post("http://localhost:5000/student", {
+          studentName: data.fullname,
+          motherName: data.mothername,
+          fatherName: data.fathername,
+          address: data.address,
+          studenId: data.studentId,
+          dept: data.dept,
+        })
+        .then(function (response) {
+          if (response.data.acknowledged) {
+            toast.success("Successfully added");
+          }
 
-    // axios
-    //   .post("http://localhost:5000/student", {
-    //     studentName: data.fullname,
-    //     motherName: data.mothername,
-    //     fatherName: data.fathername,
-    //     address: data.address,
-    //     studenId: data.studentId,
-    //     dept: data.dept,
-    //   })
-    //   .then(function (response) {
-    //     if (response.data.acknowledged) {
-    //       toast.success("Successfully added");
-    //     }
+          console.log(response.data.acknowledged);
+        })
+        .catch(function (error) {
+          console.log(error);
 
-    //     console.log(response.data.acknowledged);
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
+          toast.error("Failed to added");
+        });
 
-    //     toast.error("Failed to added");
-    //   });
-    // navigateToHome();
+    }
+
+    if(checkData){
+      axios
+      .patch(`http://localhost:5000/student/${checkData._id}`, {
+        studentName: data.fullname
+          ? data.fullname
+          : checkData?.studentName,
+        motherName: data.mothername
+          ? data.mothername
+          : checkData?.motherName,
+        fatherName: data.fathername
+          ? data.fathername
+          : checkData?.fatherName,
+        address: data.address ? data.address : checkData?.address,
+        studenId: data.studentId ? data.studentId : checkData?.studenId,
+        dept: data.dept ? data.dept : checkData?.dept,
+      })
+      .then((response) => {
+        console.log(response);
+        toast.success("successfully updated");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    }
+    
+    navigateToHome();
   };
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
 
+  const FormContainer = styled(Box)`
+  color: #2e8b57;
+  background-color: #b2dfdb;
+  padding: 35px;
+  width: 70%;
+  margin: 10% auto;
+  border-radius: 10px;
+`;
 
+const CustomCheckbox = styled(CheckBox)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  '&.Mui-checked': {
+    color: theme.palette.primary.main,
+  },
+}));
   return (
     <>
-      {/* <Button variant="outlined" onClick={handleClickOpen}>
-        Open dialog
-      </Button> */}
+
       <BootstrapDialog
         onClose={onClose}
         aria-labelledby="customized-dialog-title"
@@ -166,55 +252,78 @@ export default function CustomDialog({ onClose, checkData }) {
           ></ArrowBackIcon> */}
           <Box
             sx={{
-              backgroundColor: "#E0F2F1",
+              backgroundColor:'primary.success',
               padding: 4,
               borderRadius: "4px",
             }}
           >
+            <CustomCheckbox defaultChecked />
             <form onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={4}>
                 <Grid item xs={12} md={6}>
-                  <TextField
+                  <TextFieldDesigned
+                 
+                    id="outlined-text"
                     label="Student Name"
                     type="text"
                     autoComplete="fullname"
                     fullWidth
+                    InputLabelProps={{
+                      style: { color: '#406b66' },
+                    }}
+                    helperText={errors?.fullname?.message}
                     {...register("fullname", { required: true })}
                   />
-                  {errors.fullname?.type === "required" && (
-                    <Typography color="red">* First name is required</Typography>
-                  )}
+                  {/* {errors.fullname?.type === "required" && (
+                    <Typography color="red">
+                      * First name is required
+                    </Typography>
+                  )} */}
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
+                  <TextFieldDesigned
                     label="Father name"
                     type="text"
+                    variant="outlined"
                     autoComplete="father-name"
+                    InputLabelProps={{
+                      style: { color: '#406b66' },
+                    }}
                     fullWidth
                     {...register("fathername", { required: true })}
                   />
                   {errors.fathername?.type === "required" && (
-                    <Typography color="red">* Father name is required</Typography>
+                    <Typography color="red">
+                      * Father name is required
+                    </Typography>
                   )}
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
+                  <TextFieldDesigned
                     label="Mother name"
                     type="text"
                     autoComplete="mother-name"
+                    InputLabelProps={{
+                      style: { color: '#406b66' },
+                    }}
                     fullWidth
                     {...register("mothername", { required: true })}
                   />
                   {errors.mothername?.type === "required" && (
-                    <Typography color="red">* Mother name is required</Typography>
+                    <Typography color="red">
+                      * Mother name is required
+                    </Typography>
                   )}
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
+                  <TextFieldDesigned
                     label="Address"
                     type="text"
                     autoComplete="address"
                     fullWidth
+                    InputLabelProps={{
+                      style: { color: '#406b66' },
+                    }}
                     {...register("address", { required: true })}
                   />
                   {errors.address?.type === "required" && (
@@ -224,15 +333,20 @@ export default function CustomDialog({ onClose, checkData }) {
                   )}
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
+                  <TextFieldDesigned
                     label="Student Id"
                     type="number"
                     autoComplete="student-id"
                     fullWidth
+                    InputLabelProps={{
+                      style: { color: '#406b66' },
+                    }}
                     {...register("studentId", { required: true })}
                   />
                   {errors.studentId?.type === "required" && (
-                    <Typography color="red">* student Id is required</Typography>
+                    <Typography color="red">
+                      * student Id is required
+                    </Typography>
                   )}
                 </Grid>
 
@@ -242,16 +356,21 @@ export default function CustomDialog({ onClose, checkData }) {
                     name="dept"
                     render={({ field }) => (
                       <FormControl fullWidth>
-                        <InputLabel id="dept">Dept</InputLabel>
+                        <InputLabel id="dept_label">Dept</InputLabel>
 
-                        <Select
-                          labelId="dept"
+                        <SelectDesigned
+                          labelId="dept_label"
                           id="dept"
                           value={dept}
                           label="Dept"
                           onChange={handleChange}
                           fullWidth
+                          variant="outlined"
+                          InputLabelProps={{
+                            style: { color: '#406b66' },
+                          }}
                           {...field}
+                          {...register("dept", { required: true })}
                         >
                           <MenuItem value={"short-courses"}>
                             Short courses
@@ -267,21 +386,39 @@ export default function CustomDialog({ onClose, checkData }) {
                           <MenuItem value={"masters-degreeaduate"}>
                             Masters degree
                           </MenuItem>
-                          <MenuItem value={"postgraduate"}>Postgraduate</MenuItem>
-                        </Select>
+                          <MenuItem value={"postgraduate"}>
+                            Postgraduate
+                          </MenuItem>
+                        </SelectDesigned>
+
+                        {errors.dept?.type === "required" && (
+                          <Typography color="red">
+                            * dept is required
+                          </Typography>
+                        )}
                       </FormControl>
                     )}
                   />
                 </Grid>
               </Grid>
 
-              <InputButton type="submit" />
-
+              <Input
+                sx={{
+                  border: 1,
+                  marginTop: 2,
+                  paddingX: 4,
+                  borderRadius: 1,
+                  outline: 3,
+                  backgroundColor: "skyblue",
+                  boxShadow: " 6px 6px 3px 1px rgba(0, 0, 255, .2)",
+                }}
+                type="submit"
+              />
             </form>
           </Box>
         </FormContainer>
         <DialogActions>
-          <Button autoFocus onClick={onClose} >
+          <Button autoFocus onClick={onClose}>
             Save changes
           </Button>
         </DialogActions>

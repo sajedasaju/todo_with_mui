@@ -6,9 +6,6 @@ import CreateData from './Components/Home/CreateData';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EditData from './Components/Home/EditData';
-import { ThemeProvider } from '@emotion/react';
-import { teal } from '@mui/material/colors';
-import { createTheme } from '@mui/material';
 import CustomDialogs from './Components/Home/CustomDialog';
 
 

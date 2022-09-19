@@ -1,5 +1,6 @@
 import {
   Box,
+  Checkbox,
   createTheme,
   Paper,
   Table,
@@ -21,6 +22,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from "react-toastify";
 import styled from "@emotion/styled";
 import CustomDialog from './CustomDialog';
+import { CheckBox } from "@mui/icons-material";
+import { theme } from "../../theme/theme";
 
 const ShowData = () => {
   const navigate = useNavigate();
@@ -36,26 +39,7 @@ const ShowData = () => {
       })
   }
 
-  const theme = createTheme({
-    status: {
-      danger: "#e53e3e",
-    },
-    palette: {
-      primary: {
-        parent: teal[100],
-        main: teal[50],
-        darker: "#053e85",
-      },
-      secondary: {
-
-        main: "#11cb5f",
-      },
-      neutral: {
-        main: "#64748B",
-        contrastText: "#fff",
-      },
-    },
-  });
+  
 
   const [allData, setAllData] = useState([]);
 
@@ -76,8 +60,7 @@ const ShowData = () => {
   `;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [checkData, setCheckData] = useState({});
-  console.log(checkData)
+  const [checkData, setCheckData] = useState('');
   const handleClickOpen = (isData) => {
     // console.log(isData, checkData);
     // if (isData) {
@@ -91,16 +74,22 @@ const ShowData = () => {
     setIsModalOpen(false)
   }
 
-
+  const CustomCheckbox = styled(CheckBox)(({ theme }) => ({
+    color: theme.status.danger,
+    '&.Mui-checked': {
+      color: theme.status.danger,
+    },
+  }));
 
   return (
     <ThemeProvider theme={theme}>
+   
       <Box
         sx={{
           width: "70%",
           marginX: "auto",
           marginY: 15,
-          backgroundColor: "primary.parent",
+          backgroundColor: '',
           padding: 5,
           borderRadius: 2,
         }}
@@ -109,12 +98,12 @@ const ShowData = () => {
         Open dialog
       </Button> */}
 
-
+<CustomCheckbox defaultChecked />
 
         <AddIcon
           onClick={() => {
-            handleClickOpen(setCheckData({}))
-          }}
+            handleClickOpen(setCheckData(''))
+          }}  
           sx={{
             backgroundColor: "skyblue",
             padding: 0.5,

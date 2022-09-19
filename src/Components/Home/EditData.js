@@ -18,7 +18,7 @@ const { Option } = Select;
 
 const EditData = () => {
   const { dataId } = useParams();
-  const [studentDetails, setStudentDetails] = useState();
+  const [studentDetails, setStudentDetails] = useState('');
   const navigate = useNavigate();
   const navigateToHome = () => {
     navigate("/");
