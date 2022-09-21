@@ -9,11 +9,13 @@ export const theme = createTheme({
     primary: {
       parent: teal[100],
       main: teal[50],
-      darker: "#053e85",
+      darker: "white",
       success:green[500]
     },
     secondary: {
       main: red[100],
+      blue:"#87CEEB",
+      lightGray:'#E0F2F1'
     },
     neutral: {
       main: "#64748B",

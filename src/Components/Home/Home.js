@@ -1,11 +1,10 @@
 import { Button } from "@mui/material";
 import React, { useState } from "react";
 import CustomDialog from "./CustomDialog";
-import ShowData from "./ShowData";
+import TableData from "./TableData";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const handleClickOpen = () => {
     setIsModalOpen(true);
   };
@@ -21,7 +20,7 @@ const Home = () => {
       </Button>
       {isModalOpen && <CustomDialog onClose={handleClose} />} */}
 
-      <ShowData />
+      <TableData />
     </div>
   );
 };
