@@ -1,5 +1,6 @@
-import { Button } from "@mui/material";
+import {Button, Grid} from "@mui/material";
 import React, { useState } from "react";
+import CustomAppBar from "./CustomAppBar";
 import CustomDialog from "./CustomDialog";
 import TableData from "./TableData";
 
@@ -14,14 +15,10 @@ const Home = () => {
     setIsModalOpen(false)
   }
   return (
-    <div>
-      {/* <Button variant="outlined" onClick={handleClickOpen}>
-        Open dialog
-      </Button>
-      {isModalOpen && <CustomDialog onClose={handleClose} />} */}
-
+    <Grid container>
+      <CustomAppBar />
       <TableData />
-    </div>
+    </Grid>
   );
 };
 

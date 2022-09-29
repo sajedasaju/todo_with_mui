@@ -7,11 +7,16 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EditData from './Components/Home/EditData';
 import CustomDialogs from './Components/Home/CustomDialog';
+import axios from 'axios';
+import { Box } from '@mui/material';
 
-
+axios.interceptors.request.use(req=>{
+  console.log(req)
+  return req
+})
 function App() {
   return (
-    <div>
+    <Box>
       <Routes>
         <Route path="/" element={<Home />} />
         {/* <Route path="/createData" element={<CreateData />} />
@@ -21,7 +26,7 @@ function App() {
       <ToastContainer />
 
 
-    </div>
+    </Box>
   );
 }
 

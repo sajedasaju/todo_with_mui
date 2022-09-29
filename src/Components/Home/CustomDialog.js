@@ -62,40 +62,28 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
     backgroundColor: "red",
   },
   [`& .${classes.select}`]: {
-    color: 'black',
-    '&:before': {  // changes the bottom textbox border when not focused
-      borderColor: 'red',
-      color:'black'
+    color: "black",
+    "&:before": {
+      // changes the bottom textbox border when not focused
+      borderColor: "red",
+      color: "black",
     },
-    '&:after': {    // changes the bottom textbox border when clicked/focused.  thought it would be the same with input label
-      borderColor: 'green',
-    }
-  }
+    "&:after": {
+      // changes the bottom textbox border when clicked/focused.  thought it would be the same with input label
+      borderColor: "green",
+    },
+  },
 }));
 
-// const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-//   "& .MuiDialogContent-root": {
-//     padding: theme.spacing(2),
-//   },
-//   "& .MuiDialogActions-root": {
-//     padding: theme.spacing(1),
-//   },
-// }));
 const TextFieldDesigned = styled(TextField)(({ theme }) => ({
-  // " & .MuiOutlinedInput-root": {
-  //   "&.Mui-focused fieldset": {
-  //     "border-color": "#406b66",
-  //     "border-width": ".5px",
-  //   },
-  // },
   border: 0,
   backgroundColor: "#efeeea",
   boxShadow:
     "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px",
 }));
 const SelectDesigned = styled(Select)(({ theme }) => ({
-  color:'#6d6d6d',
-  
+  color: "#6d6d6d",
+
   " & .MuiOutlinedInput-root": {
     "&.Mui-focused fieldset": {
       "border-color": "#406b66",
@@ -104,7 +92,7 @@ const SelectDesigned = styled(Select)(({ theme }) => ({
   },
 }));
 
-const BootstrapDialogTitle = (props) => {
+const CustomizeDialogTitle = (props) => {
   const { children, onClose, ...other } = props;
 
   return (
@@ -144,7 +132,7 @@ const BootstrapDialogTitle = (props) => {
   );
 };
 
-BootstrapDialogTitle.propTypes = {
+CustomizeDialogTitle.propTypes = {
   children: PropTypes.node,
   onClose: PropTypes.func.isRequired,
 };
@@ -155,7 +143,7 @@ export default function CustomDialog({
   setCheckEdit,
   setCheckAdd,
 }) {
-  console.log(onClose);
+  console.log(PREFIX);
   let schema = yup.object().shape({
     fullname: yup.string().required("Please enter your name! It's rquired"),
     fathername: yup
@@ -204,92 +192,65 @@ export default function CustomDialog({
     if (!checkData) {
       async function createdData() {
         try {
-          const createdData=await axios
-          .post("http://localhost:5000/student", {
-            studentName: data.fullname,
-            motherName: data.mothername,
-            fatherName: data.fathername,
-            address: data.address,
-            studenId: data.studentId,
-            dept: data.dept,
-          })
-          .then(function (response) {
-            if (response.data.acknowledged) {
-             
-              toast.success("Successfully added");
-            }
-  
-            console.log(response.data.acknowledged);
-          })
+          const createdData = await axios
+            .post("http://localhost:5000/student", {
+              studentName: data.fullname,
+              motherName: data.mothername,
+              fatherName: data.fathername,
+              address: data.address,
+              studenId: data.studentId,
+              dept: data.dept,
+            })
+            .then(function (response) {
+              if (response.data.acknowledged) {
+                toast.success("Successfully added");
+              }
+
+              console.log(response.data.acknowledged);
+            });
           setCheckAdd(true);
         } catch (error) {
           toast.error("Failed to added");
         }
       }
-      createdData()
-      
-   
+      createdData();
     }
 
     if (checkData) {
-
-
       async function editData() {
         try {
-          const editedData=await axios
-          .patch(`http://localhost:5000/student/${checkData._id}`, {
-            studentName: data.fullname ? data.fullname : checkData?.studentName,
-            motherName: data.mothername ? data.mothername : checkData?.motherName,
-            fatherName: data.fathername ? data.fathername : checkData?.fatherName,
-            address: data.address ? data.address : checkData?.address,
-            studenId: data.studentId ? data.studentId : checkData?.studenId,
-            dept: data.dept ? data.dept : checkData?.dept,
-          })
-          .then((response) => {
-            console.log(response);
-        
-            toast.success("successfully updated");
-          })
+          const editedData = await axios
+            .patch(`http://localhost:5000/student/${checkData._id}`, {
+              studentName: data.fullname
+                ? data.fullname
+                : checkData?.studentName,
+              motherName: data.mothername
+                ? data.mothername
+                : checkData?.motherName,
+              fatherName: data.fathername
+                ? data.fathername
+                : checkData?.fatherName,
+              address: data.address ? data.address : checkData?.address,
+              studenId: data.studentId ? data.studentId : checkData?.studenId,
+              dept: data.dept ? data.dept : checkData?.dept,
+            })
+            .then((response) => {
+              console.log(response);
+
+              toast.success("successfully updated");
+            });
           setCheckEdit(true);
         } catch (error) {
           toast.error("Failed to Edit");
         }
       }
-      editData()
-
-
-
-      // axios
-      //   .patch(`http://localhost:5000/student/${checkData._id}`, {
-      //     studentName: data.fullname ? data.fullname : checkData?.studentName,
-      //     motherName: data.mothername ? data.mothername : checkData?.motherName,
-      //     fatherName: data.fathername ? data.fathername : checkData?.fatherName,
-      //     address: data.address ? data.address : checkData?.address,
-      //     studenId: data.studentId ? data.studentId : checkData?.studenId,
-      //     dept: data.dept ? data.dept : checkData?.dept,
-      //   })
-      //   .then((response) => {
-      //     console.log(response);
-      //     setCheckEdit(true);
-      //     toast.success("successfully updated");
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      editData();
     }
 
     reset();
     onClose();
   };
 
-  const FormContainer = styled(Box)`
-    color: #2e8b57;
-    background-color: #f4f1eb;
-    padding: 25px;
-    width: 80%;
-    margin: 10% auto;
-    border-radius: 10px;
-  `;
 
   return (
     <StyledGrid container>
@@ -300,179 +261,173 @@ export default function CustomDialog({
         open={true}
         maxWidth="md"
       >
-        <BootstrapDialogTitle id="customized-dialog-title" onClose={onClose}>
+        <CustomizeDialogTitle id="customized-dialog-title" onClose={onClose}>
           {checkData ? "Edit Your Data" : "Add your data"}
-        </BootstrapDialogTitle>
+        </CustomizeDialogTitle>
 
-        <FormContainer
-          sx={{
-            marginX: "0 auto",
-
-           
-          }}
+        <Grid
+          container
+          color="#2e8b57"
+          width="80%"
+          p={4}
+          bgcolor="#f4f1eb"
+          margin="0 auto"
+          mb={5}
+          borderRadius={3}
         >
-          <Box
-            sx={{
-              // backgroundColor: "secondary.lightGray",
-              padding: 2,
-              borderRadius: "4px",
-            }}
-          >
-            {/* <CustomCheckbox defaultChecked /> */}
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Grid container spacing={4}>
-                <Grid item xs={12} md={6}>
-                  <TextFieldDesigned
-                    id="outlined-text"
-                    label="Student Name"
-                    type="text"
-                    autoComplete="fullname"
-                    fullWidth
-                    InputLabelProps={{
-                      style: { color: "#6d6d6d" },
-                    }}
-                    color="primary"
-                    variant="filled"
-                    helperText={errors?.fullname?.message}
-                    {...register("fullname", { required: true })}
+          {/* <CustomCheckbox defaultChecked /> */}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={6}>
+                <TextFieldDesigned
+                  id="outlined-text"
+                  label="Student Name"
+                  type="text"
+                  autoComplete="fullname"
+                  fullWidth
+                  InputLabelProps={{
+                    style: { color: "#6d6d6d" },
+                  }}
+                  color="primary"
+                  variant="filled"
+                  helperText={errors?.fullname?.message}
+                  {...register("fullname", { required: true })}
 
-                    // style={{
-                    //   backgroundColor:'#F4F1EB'
-                    // }}
-                  />
-                  {/* <FormHelperText>{errors?.fullname?.message}</FormHelperText> */}
-                  {/* {errors.fullname?.type === "required" && (
+                  // style={{
+                  //   backgroundColor:'#F4F1EB'
+                  // }}
+                />
+                {/* <FormHelperText>{errors?.fullname?.message}</FormHelperText> */}
+                {/* {errors.fullname?.type === "required" && (
                     <Typography color="red">
                       * First name is required
                     </Typography>
                   )} */}
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextFieldDesigned
-                    label="Father name"
-                    type="text"
-                    autoComplete="father-name"
-                    InputLabelProps={{
-                      style: { color: "#6d6d6d" },
-                    }}
-                    color="primary"
-                    variant="filled"
-                    fullWidth
-                    {...register("fathername", { required: true })}
-                    helperText={errors?.fathername?.message}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextFieldDesigned
-                    label="Mother name"
-                    type="text"
-                    autoComplete="mother-name"
-                    InputLabelProps={{
-                      style: { color: "#6d6d6d" },
-                    }}
-                    color="primary"
-                    variant="filled"
-                    fullWidth
-                    {...register("mothername", { required: true })}
-                    helperText={errors?.mothername?.message}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextFieldDesigned
-                    label="Address"
-                    type="text"
-                    autoComplete="address"
-                    fullWidth
-                    InputLabelProps={{
-                      style: { color: "#6d6d6d" },
-                    }}
-                    color="primary"
-                    variant="filled"
-                    {...register("address", { required: true })}
-                    helperText={errors?.address?.message}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextFieldDesigned
-                    label="Student Id"
-                    type="text"
-                    autoComplete="student-id"
-                    fullWidth
-                    InputLabelProps={{
-                      style: { color: "#6d6d6d" },
-                    }}
-                    color="primary"
-                    variant="filled"
-                    {...register("studentId", { required: true })}
-                    helperText={errors?.studentId?.message}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <Controller
-                    control={control}
-                    name="dept"
-                    render={({ field }) => (
-                      <FormControl variant="filled" fullWidth>
-                        <InputLabel style={{color:"#6d6d6d"}} id="dept_label">Dept</InputLabel>
-
-                        <SelectDesigned
-                          labelId="dept_label"
-                          className={classes.select}
-                          id="dept"
-                          value={dept}
-                          // label="Dept"
-                          onChange={handleChange}
-                          fullWidth
-                          InputLabelProps={{
-                            style: { color: "#6d6d6d" },
-                          }}
-                          {...field}
-                          {...register("dept", { required: true })}
-                        >
-                          <MenuItem value={"short-courses"}>
-                            Short courses
-                          </MenuItem>
-                          <MenuItem value={"featured-courses"}>
-                            Featured courses
-                          </MenuItem>
-                          <MenuItem value={"undergraduate"}>
-                            Undergraduate
-                          </MenuItem>
-                          <MenuItem value={"diploma"}>diploma</MenuItem>
-                          <MenuItem value={"certificate"}>Certificate</MenuItem>
-                          <MenuItem value={"masters-degreeaduate"}>
-                            Masters degree
-                          </MenuItem>
-                          <MenuItem value={"postgraduate"}>
-                            Postgraduate
-                          </MenuItem>
-                        </SelectDesigned>
-                        <FormHelperText>{errors?.dept?.message}</FormHelperText>
-                      </FormControl>
-                    )}
-                  />
-                </Grid>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextFieldDesigned
+                  label="Father name"
+                  type="text"
+                  autoComplete="father-name"
+                  InputLabelProps={{
+                    style: { color: "#6d6d6d" },
+                  }}
+                  color="primary"
+                  variant="filled"
+                  fullWidth
+                  {...register("fathername", { required: true })}
+                  helperText={errors?.fathername?.message}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextFieldDesigned
+                  label="Mother name"
+                  type="text"
+                  autoComplete="mother-name"
+                  InputLabelProps={{
+                    style: { color: "#6d6d6d" },
+                  }}
+                  color="primary"
+                  variant="filled"
+                  fullWidth
+                  {...register("mothername", { required: true })}
+                  helperText={errors?.mothername?.message}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextFieldDesigned
+                  label="Address"
+                  type="text"
+                  autoComplete="address"
+                  fullWidth
+                  InputLabelProps={{
+                    style: { color: "#6d6d6d" },
+                  }}
+                  color="primary"
+                  variant="filled"
+                  {...register("address", { required: true })}
+                  helperText={errors?.address?.message}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextFieldDesigned
+                  label="Student Id"
+                  type="text"
+                  autoComplete="student-id"
+                  fullWidth
+                  InputLabelProps={{
+                    style: { color: "#6d6d6d" },
+                  }}
+                  color="primary"
+                  variant="filled"
+                  {...register("studentId", { required: true })}
+                  helperText={errors?.studentId?.message}
+                />
               </Grid>
 
-              <Input
+              <Grid item xs={12} md={6}>
+                <Controller
+                  control={control}
+                  name="dept"
+                  render={({ field }) => (
+                    <FormControl variant="filled" fullWidth>
+                      <InputLabel style={{ color: "#6d6d6d" }} id="dept_label">
+                        Dept
+                      </InputLabel>
+
+                      <SelectDesigned
+                        labelId="dept_label"
+                        className={classes.select}
+                        id="dept"
+                        value={dept}
+                        // label="Dept"
+                        onChange={handleChange}
+                        fullWidth
+                        InputLabelProps={{
+                          style: { color: "#6d6d6d" },
+                        }}
+                        {...field}
+                        {...register("dept", { required: true })}
+                      >
+                        <MenuItem value={"short-courses"}>
+                          Short courses
+                        </MenuItem>
+                        <MenuItem value={"featured-courses"}>
+                          Featured courses
+                        </MenuItem>
+                        <MenuItem value={"undergraduate"}>
+                          Undergraduate
+                        </MenuItem>
+                        <MenuItem value={"diploma"}>diploma</MenuItem>
+                        <MenuItem value={"certificate"}>Certificate</MenuItem>
+                        <MenuItem value={"masters-degreeaduate"}>
+                          Masters degree
+                        </MenuItem>
+                        <MenuItem value={"postgraduate"}>Postgraduate</MenuItem>
+                      </SelectDesigned>
+                      <FormHelperText>{errors?.dept?.message}</FormHelperText>
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+            </Grid>
+
+            <Input
               disableUnderline={true}
-                sx={{
-                  border: 0,
-                  marginTop: 2,
-                  paddingX: 4,
-                  paddingY:.5,
-                  borderRadius: 1,
-                  backgroundColor: "#b7b2aa",
-                  alignItems:'center',
-                  // boxShadow: " 6px 6px 3px 1px rgba(0, 0, 255, .2)",
-                }}
-                type="submit"
-              />
-            </form>
-          </Box>
-        </FormContainer>
-        
+              sx={{
+                border: 0,
+                marginTop: 2,
+                paddingX: 4,
+                paddingY: 0.5,
+                borderRadius: 1,
+                backgroundColor: "#b7b2aa",
+                alignItems: "center",
+                // boxShadow: " 6px 6px 3px 1px rgba(0, 0, 255, .2)",
+              }}
+              type="submit"
+            />
+          </form>
+        </Grid>
       </Dialog>
     </StyledGrid>
   );
